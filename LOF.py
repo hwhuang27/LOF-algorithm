@@ -41,29 +41,45 @@ def avg_reachability(dist, knn, knn_idx, k):
     return reach
 
 # Returns outliers from input
-def local_outlier_factor(data, k):
-    outliers = data.copy()
+def local_outlier_factor(data, k):  
+    print('Calculating euclidean distances..')
     dist = distances(data)
-    print(dist)
+    print('Done.')
+    print('Calculating knn distances..')
     knn, knn_idx = knn_distance(data, dist, k)
-    print(knn)
-    print(knn_idx)
-    reach = avg_reachability(dist, knn, knn_idx, k)
-    print(reach)
+    print('Done.')
+    print('Calculating average reachability and LRD..')
+    reach = avg_reachability(dist, knn, knn_idx, k) 
     LRD = 1/reach
-    print(LRD)
+    print('Done.')
     
-    return outliers
+    print('Calculating LOF..')
+    LOF = np.zeros(len(LRD))
+    for point in range(len(LRD)):
+        avgLRD = 0
+        for neighbor in range(k):
+            avgLRD += LRD[int(knn_idx[point][neighbor])]
+        
+        LOF[point] = (avgLRD/k) / LRD[point]
+    print('Done.')
+    
+    max_LOF = max(LOF)
+    max_LOF_idx = np.where(LOF == max_LOF)
+    
+    print(max_LOF)
+    print(max_LOF_idx)
+    
+    return data
 
 def main():
     data = pd.read_csv("outliers-3.csv")
-    outliers = local_outlier_factor(data, 3)
+    outliers = local_outlier_factor(data, 2)
+    #data = pd.read_csv("outliers-3 - Copy.csv")
+    #outliers = local_outlier_factor(data, 22)
     
-    
-    
-    #plt.scatter(data['X1'], data['X2'], s=5, c='b')
-    #plt.scatter(outliers['X1'], outliers['X2'], s=5, c='r')
-    #plt.show()
+    plt.scatter(data['X1'], data['X2'], s=5, c='b')
+    plt.scatter(outliers['X1'], outliers['X2'], s=5, c='r')
+    plt.show()
     
 if __name__ == '__main__':
     main()
