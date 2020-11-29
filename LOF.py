@@ -55,10 +55,10 @@ def local_outlier_factor(data, k):
         LOF[point] = (avgLRD/k) / LRD[point]
         
     # check the maximum LOF to tune hyperparameter k    
-    max_LOF = max(LOF)
-    max_LOF_idx = np.where(LOF == max_LOF)
-    print(max_LOF)
-    print(max_LOF_idx)
+    print('max LOF value: ', max(LOF))
+    print('max LOF index: ', np.where(LOF == max(LOF))[0])
+    outliers = np.where(LOF > 2.0)[0]
+    print(outliers)
     
     return data
 
@@ -71,6 +71,7 @@ def main():
     plt.scatter(data['X1'], data['X2'], s=5, c='b')
     plt.scatter(outliers['X1'], outliers['X2'], s=5, c='r')
     plt.show()
+    # save figure here instead of plt show
     
 if __name__ == '__main__':
     main()
