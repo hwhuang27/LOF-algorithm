@@ -19,6 +19,7 @@ def distances(data):
 # Get kth closest neighbors of each data point
 def knn_dist(data, dist, k):
     knn = np.zeros(shape=(len(data), k))
+    knn_points = np.zeros(shape=(len(data), k))
     for row in range(len(dist)):
         temp = dist[row]
         temp = np.sort(temp)
@@ -26,20 +27,28 @@ def knn_dist(data, dist, k):
     return knn
 
 # Calculate average reachability for each point
-def avg_reachability(data, knn, k):
-    reach = np.zeros(len(data))
+def avg_reachability(dist, knn, k):
+    reach = np.zeros(len(dist))
+    '''
     for i in range(len(reach)):
-        avgRD = (1/k)
+        for j in range(len(reach)):
+            if i != j:
+                return reach
+        
+        #reach[i] = (1/k) *
+    '''
+    
     return reach
 
 # Returns outliers from input
 def local_outlier_factor(data, k):
     outliers = data.copy()
     dist = distances(data)
+    print(dist)
     knn = knn_dist(data, dist, k)
     print(knn)
-    reach = avg_reachability(data, knn, k)
-    #print(reach)
+    reach = avg_reachability(dist, knn, k)
+    print(reach)
     
     return outliers
 
