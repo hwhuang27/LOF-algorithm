@@ -31,30 +31,27 @@ def knn_distance(data, dist, k):
 # Calculate average reachability for each point
 def avg_reachability(dist, knn, knn_idx, k):
     reach = np.zeros(len(dist))
-    print(len(knn))
-    '''
     for i in range(len(knn)):
         avgRD = 0
         for j in range(k):
-            if knn:
-                knn_dist = 0
-                eucl_dist = 0
-                
+                eucl_dist = knn[i][j]
+                knn_dist = knn[int(knn_idx[i][j])][k-1]
                 avgRD += max(knn_dist, eucl_dist)
-        
         reach[i] = avgRD / k
-    '''
     return reach
 
 # Returns outliers from input
 def local_outlier_factor(data, k):
     outliers = data.copy()
     dist = distances(data)
+    print(dist)
     knn, knn_idx = knn_distance(data, dist, k)
     print(knn)
     print(knn_idx)
     reach = avg_reachability(dist, knn, knn_idx, k)
-    #print(reach)
+    print(reach)
+    LRD = 1/reach
+    print(LRD)
     
     return outliers
 
