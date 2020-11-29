@@ -8,13 +8,12 @@ sns.set()
 
 # Calculate euclidean distances between every 2 data points
 def distances(data):
-    dist = data.apply(lambda row: [np.linalg.norm(row.values - data.loc[[elem], :].values, 2) 
-                                   for elem in data.index.values], axis=1)
-    dist = pd.DataFrame(
-        data=dist.values.tolist(),
-        columns=data.index.tolist(),
-        index=data.index.tolist())
-    return dist.to_numpy()
+    dist = np.zeros(shape = (len(data), len(data)))
+    coords = data.to_numpy()
+    for i in range(len(data)):
+        for j in range(len(data)):
+            dist[i][j] = math.sqrt((coords[i][0] - coords[j][0])**2 + (coords[i][1] - coords[j][1])**2)
+    return dist
 
 # Get kth closest neighbors (and their indices) of each data point
 def knn_distance(data, dist, k):
@@ -42,40 +41,32 @@ def avg_reachability(dist, knn, knn_idx, k):
 
 # Returns outliers from input
 def local_outlier_factor(data, k):  
-    print('Calculating euclidean distances..')
     dist = distances(data)
-    print('Done.')
-    print('Calculating knn distances..')
     knn, knn_idx = knn_distance(data, dist, k)
-    print('Done.')
-    print('Calculating average reachability and LRD..')
     reach = avg_reachability(dist, knn, knn_idx, k) 
     LRD = 1/reach
-    print('Done.')
-    
-    print('Calculating LOF..')
     LOF = np.zeros(len(LRD))
+    
     for point in range(len(LRD)):
         avgLRD = 0
         for neighbor in range(k):
             avgLRD += LRD[int(knn_idx[point][neighbor])]
         
         LOF[point] = (avgLRD/k) / LRD[point]
-    print('Done.')
-    
+        
+    # check the maximum LOF to tune hyperparameter k    
     max_LOF = max(LOF)
     max_LOF_idx = np.where(LOF == max_LOF)
-    
     print(max_LOF)
     print(max_LOF_idx)
     
     return data
 
 def main():
-    data = pd.read_csv("outliers-3.csv")
-    outliers = local_outlier_factor(data, 2)
-    #data = pd.read_csv("outliers-3 - Copy.csv")
-    #outliers = local_outlier_factor(data, 22)
+    #data = pd.read_csv("outliers-3.csv")
+    #outliers = local_outlier_factor(data, 2)
+    data = pd.read_csv("outliers-3 - Copy.csv")
+    outliers = local_outlier_factor(data, 22)
     
     plt.scatter(data['X1'], data['X2'], s=5, c='b')
     plt.scatter(outliers['X1'], outliers['X2'], s=5, c='r')
@@ -83,11 +74,4 @@ def main():
     
 if __name__ == '__main__':
     main()
-    
-    '''
-    for i in range(len(data)):
-        for j in range(i, len(data)):
-            print()
-            #arr[i][j] = math.sqrt(data[i]['X1']**2 + 
-    '''      
     
