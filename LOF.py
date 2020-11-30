@@ -55,21 +55,24 @@ def local_outlier_factor(data, k):
         LOF[point] = (avgLRD/k) / LRD[point]
         
     # check the maximum LOF to tune hyperparameter k    
-    print('max LOF value: ', max(LOF))
-    print('max LOF index: ', np.where(LOF == max(LOF))[0])
-    outliers = np.where(LOF > 2.0)[0]
-    print(outliers)
+    #print('max LOF value: ', max(LOF))
+    #print('max LOF index: ', np.where(LOF == max(LOF))[0])
     
-    return data
+    # filter outliers from original data
+    dnp = data.to_numpy()
+    outliers_idx = np.where(LOF > 1.6)[0]
+    outliers = []
+    for i in range(len(outliers_idx)):
+        index = outliers_idx[i]
+        outliers.append(list(dnp[index]))
+        
+    return pd.DataFrame(outliers, columns=['X1', 'X2'])
 
 def main():
-    #data = pd.read_csv("outliers-3.csv")
-    #outliers = local_outlier_factor(data, 2)
-    data = pd.read_csv("outliers-3 - Copy.csv")
+    data = pd.read_csv("outliers-3.csv")
     outliers = local_outlier_factor(data, 22)
-    
-    plt.scatter(data['X1'], data['X2'], s=5, c='b')
-    plt.scatter(outliers['X1'], outliers['X2'], s=5, c='r')
+    plt.scatter(data['X1'], data['X2'], s=8, c='b')
+    plt.scatter(outliers['X1'], outliers['X2'], s=8, c='r')
     plt.show()
     # save figure here instead of plt show
     
