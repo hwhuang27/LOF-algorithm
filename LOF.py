@@ -73,8 +73,7 @@ def main():
     outliers = local_outlier_factor(data, 22)
     plt.scatter(data['X1'], data['X2'], s=8, c='b')
     plt.scatter(outliers['X1'], outliers['X2'], s=8, c='r')
-    plt.show()
-    # save figure here instead of plt show
+    plt.savefig('outliers-3-output.png')
     
 if __name__ == '__main__':
     main()
