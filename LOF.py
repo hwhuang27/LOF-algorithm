@@ -60,7 +60,7 @@ def local_outlier_factor(data, k):
     
     # filter outliers from original data
     dnp = data.to_numpy()
-    outliers_idx = np.where(LOF > 1.6)[0]
+    outliers_idx = np.where(LOF > 1.95)[0]
     outliers = []
     for i in range(len(outliers_idx)):
         index = outliers_idx[i]
